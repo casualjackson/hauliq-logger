@@ -1,16 +1,18 @@
 import streamlit as st
 from datetime import datetime
 import gspread
+import json
 from google.oauth2.service_account import Credentials
 
 # Google Sheets setup
-CREDS_FILE = "logger/hauliq_credentials.json"
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = Credentials.from_service_account_file(CREDS_FILE, scopes=SCOPE)
+# Load credentials from Streamlit Secrets
+creds_dict = json.loads(st.secrets["GOOGLE_CREDS"])
+creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPE)
 client = gspread.authorize(creds)
 sheet = client.open_by_key("1d_Yqn0ZANSeGIvtNKXBivFPoj-Av5wcJJW13z8CcHW8").worksheet("Data")
 
